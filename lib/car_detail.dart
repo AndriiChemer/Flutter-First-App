@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_food_app/bloc/car_bloc/state_bloc.dart';
 import 'package:flutter_food_app/bloc/car_bloc/state_provider.dart';
 import 'package:flutter_food_app/bloc/listStyleColorBloc.dart';
+import 'package:flutter_food_app/car_on_map.dart';
 import 'package:flutter_food_app/model/carItem.dart';
 import 'package:flutter_food_app/model/foodItem.dart';
 
@@ -135,7 +136,7 @@ class CarHeaderAnimationState extends State<CarHeaderAnimation> with TickerProvi
     scaleController = AnimationController(duration:  Duration(milliseconds: 350), vsync: this);
 
     fadeAnimation = Tween(begin: 0.0, end: 1.0).animate(fadeController);
-    scaleAnimation = Tween(begin: 0.0, end: 1.0).animate(CurvedAnimation(
+    scaleAnimation = Tween(begin: 0.8, end: 1.0).animate(CurvedAnimation(
       parent: scaleController,
       curve: Curves.easeInOut,
       reverseCurve: Curves.easeInOut
@@ -198,6 +199,14 @@ class CarHeaderAnimationState extends State<CarHeaderAnimation> with TickerProvi
     );
   }
 
+
+  @override
+  void dispose() {
+    fadeController.dispose();
+    scaleController.dispose();
+    super.dispose();
+  }
+
   void showSnackBar(String text, TextStyle textStyle, Color color) {
     final snackBar = SnackBar(
       content: Text("This feature not implemented yet!", style: textStyle,),
@@ -254,6 +263,10 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> with SingleTicker
 
       });
     });
+
+    Future.delayed(Duration.zero, () {
+      stateBloc.revertAnimation();
+    });
   }
 
   forwardAnimation() {
@@ -293,6 +306,14 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> with SingleTicker
       ),
     );
   }
+
+  @override
+  void dispose() {
+    animationController.dispose();
+    super.dispose();
+  }
+
+
 }
 
 class SheetContainer extends StatelessWidget {
@@ -350,8 +371,42 @@ class SheetContainer extends StatelessWidget {
                       color: Colors.grey[200]
                   ),
                 ),
+                getLocationBlock(context),
+                Container(
+                  height: 130,
+                  width: double.infinity,
+                ),
+
               ],
             ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Container getLocationBlock(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.all(12),
+      child: Column(
+        children: <Widget>[
+          GestureDetector(
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => CustomMap(car: car,)));
+            },
+            child: Row(
+              children: <Widget>[
+                Icon(Icons.location_on, color: Colors.blue[400],),
+                Text(car.localimodelzation, style: TextStyle(color: Colors.blue[400], fontWeight: FontWeight.w500, fontSize: 15),),
+              ],
+            ),
+          ),
+          RaisedButton(
+            color: Colors.indigo[900],
+            child: Text("Pokaż nomer", style: TextStyle(color: Colors.white),),
+            onPressed: (){
+              showSnackBar("This feature not implemented yet?", TextStyle(color: Colors.white), Colors.red);
+            },
           )
         ],
       ),

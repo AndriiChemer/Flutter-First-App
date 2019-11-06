@@ -14,6 +14,11 @@ class StateBloc {
     animationController.sink.add(provider.isAnimating);
   }
 
+  void revertAnimation() {
+    provider.isAnimating = true;
+    animationController.sink.add(provider.isAnimating);
+  }
+
   void dispose() {
     animationController.close();
   }
