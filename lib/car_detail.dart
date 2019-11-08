@@ -397,7 +397,7 @@ class SheetContainer extends StatelessWidget {
             child: Row(
               children: <Widget>[
                 Icon(Icons.location_on, color: Colors.blue[400],),
-                Text(car.localimodelzation, style: TextStyle(color: Colors.blue[400], fontWeight: FontWeight.w500, fontSize: 15),),
+                Text(car.localimodelzation ?? "" , style: TextStyle(color: Colors.blue[400], fontWeight: FontWeight.w500, fontSize: 15),),
               ],
             ),
           ),
@@ -436,7 +436,7 @@ class SheetContainer extends StatelessWidget {
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: Colors.blue[900]),
           ),
           SizedBox(height: 7,),
-          Text(car.description)
+          Text(car.description ?? "")
         ],
       ),
     );
@@ -467,7 +467,7 @@ class SheetContainer extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Text("Marka pojazdu", style: getTextStyleTitle(),),
-              Text(car.brand, style: getTextStyleDescription(),)
+              Text(car.brand ?? "", style: getTextStyleDescription(),)
             ],
           ),
           SizedBox(height: 5,),
@@ -475,7 +475,7 @@ class SheetContainer extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Text("Model pojazdu", style: getTextStyleTitle(),),
-              Text(car.model, style: getTextStyleDescription(),)
+              Text(car.model ?? "", style: getTextStyleDescription(),)
             ],
           ),
           SizedBox(height: 5,),
@@ -483,7 +483,7 @@ class SheetContainer extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Text("Rok produkcji", style: getTextStyleTitle(),),
-              Text(car.year.toString(), style: getTextStyleDescription(),)
+              Text(car.year == null ? "" : car.year.toString(), style: getTextStyleDescription(),)
             ],
           ),
           SizedBox(height: 5,),
@@ -491,7 +491,7 @@ class SheetContainer extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Text("Przebieg", style: getTextStyleTitle(),),
-              Text(car.km.toString(), style: getTextStyleDescription(),)
+              Text(car.km == null ? "" : car.km.toString(), style: getTextStyleDescription(),)
             ],
           ),
           SizedBox(height: 5,),
@@ -499,7 +499,7 @@ class SheetContainer extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Text("Kategoria", style: getTextStyleTitle(),),
-              Text(car.category, style: getTextStyleDescription(),)
+              Text(car.category == null ? "" : car.category, style: getTextStyleDescription(),)
             ],
           ),
           SizedBox(height: 5,),
@@ -507,7 +507,7 @@ class SheetContainer extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Text("Palne", style: getTextStyleTitle(),),
-              Text(car.fuel, style: getTextStyleDescription(),)
+              Text(car.fuel ?? "", style: getTextStyleDescription(),)
             ],
           ),
           SizedBox(height: 5,),

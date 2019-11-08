@@ -66,7 +66,7 @@ class Car {
   String localimodelzation;
   String category;
   String photo;
-  double price;
+  int price;
   double lat;
   double lng;
   bool auction;
@@ -96,10 +96,10 @@ class Car {
 
   factory Car.fromJson(Map<String,dynamic> json) {
     return Car(
-      id: int.parse(json['id']),
-      category_id: int.parse(json['category_id']),
-      cm_3: int.parse(json['cm_3']),
-      fuel_id: int.parse(json['fuel_id']),
+      id: json['id'] as int,
+      category_id: json['category_id'] as int,
+      cm_3: json['cm_3'] as int,
+      fuel_id: json['fuel_id'] as int,
       description: json['description'],
       brand: json['brand'],
       model: json['model'],
@@ -107,13 +107,13 @@ class Car {
       localimodelzation: json['localimodelzation'],
       category: json['category'],
       photo: json['photo'], //?? ?? Constants.NEWS_PLACEHOLDER_IMAGE_ASSET_URL
-      price: double.parse(json['price']),
-      lat: double.parse(json['lat']),
-      lng: double.parse(json['lng']),
-      auction: json['auction'] == 'true',
-      featured: json['featured'] == 'true',
-      year: int.parse(json['year']),
-      km: int.parse(json['km']),
+      price: json['price'] as int,
+      lat: json['lat'] as double,
+      lng: json['lng'] as double,
+      auction: json['auction'] as bool,
+      featured: json['featured'] == "true",
+      year: json['year'] as int,
+      km: json['km'] as int,
     );
   }
 
@@ -124,7 +124,7 @@ class Car {
         parse: (response) {
           final result = json.decode(response.body);
           print(result);
-          Iterable list = result['cars'];
+          Iterable list = result;
           return list.map((model) => Car.fromJson(model)).toList();
         }
     );

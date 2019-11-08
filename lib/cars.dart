@@ -5,36 +5,7 @@ import 'package:flutter_food_app/bloc/listStyleColorBloc.dart';
 import 'package:flutter_food_app/car_detail.dart';
 import 'package:flutter_food_app/model/carItem.dart';
 import 'package:flutter_food_app/model/foodItem.dart';
-
-
-//class CarsList extends StatelessWidget {
-//
-//  @override
-//  Widget build(BuildContext context) {
-//    AppBar getAppBar(BuildContext context) {
-//      return AppBar(
-//        actions: <Widget>[
-//          GestureDetector(
-//            onTap: () {
-//              //TODO changing view
-//              Navigator.pop(context);
-//            },
-//            child: Container(
-//              margin: EdgeInsets.only(right: 20),
-//              child: Icon(Icons.apps),
-//            ),
-//          )
-//        ],
-//      );
-//    }
-//
-//    return Scaffold(
-//        appBar: getAppBar(context),
-//        body: CarsListContainer(),
-//        bottomNavigationBar: CustomBottomNavigationBar(),
-//    );
-//  }
-//}
+import 'package:flutter_food_app/services/webservice.dart';
 
 //TODO main CartList screen
 class CarsList extends StatefulWidget {
@@ -85,18 +56,65 @@ class CarsListContainer extends StatefulWidget {
 
 class CarsListContainerState extends State<CarsListContainer> {
 
+  bool isLoading = true;
+  List<Car> _cars = List<Car>();
+
+
+  @override
+  void initState() {
+    super.initState();
+    _getCars();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return isLoading ? showProgress(context) : buildContentContainer();
+  }
 
+  Container buildContentContainer() {
+    return Container(
       child: ListView(
         children: <Widget>[
           SizedBox(height: 45,),
-          for(Car car in carList.carList)
+          for(Car car in _cars)
             CarItem(car: car),
         ],
       ),
     );
+  }
+
+  Container showProgress(BuildContext context) {
+    return Container(
+        child: Center(
+          child: Container(
+            width: 300,
+            height: 200,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(25),
+                color: Colors.blue[300]
+            ),
+            alignment: Alignment.center,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                CircularProgressIndicator(backgroundColor: Colors.blue[900],),
+                Container(margin: EdgeInsets.only(left: 20), child: Text("Loading", style: TextStyle(color: Colors.white, fontSize: 25),))
+              ],
+            ),
+          ),
+        )
+    );
+  }
+
+
+  void _getCars() {
+    Webservice().load(Car.all).then((cars) => {
+      setState(() => {
+        _cars = cars,
+        isLoading = false,
+      })
+    });
+
   }
 }
 
