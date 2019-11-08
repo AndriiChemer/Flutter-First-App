@@ -1,4 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_food_app/network/network.dart';
+import 'package:flutter_food_app/services/webservice.dart';
 
 CarList carList = CarList(carList: [
   Car(id: 1, category_id: 1, cm_3: 2000, fuel_id: 1, description: desc,
@@ -88,6 +92,44 @@ class Car {
       @required this.featured,
       @required this.year,
       @required this.km});
+
+
+  factory Car.fromJson(Map<String,dynamic> json) {
+    return Car(
+      id: int.parse(json['id']),
+      category_id: int.parse(json['category_id']),
+      cm_3: int.parse(json['cm_3']),
+      fuel_id: int.parse(json['fuel_id']),
+      description: json['description'],
+      brand: json['brand'],
+      model: json['model'],
+      fuel: json['fuel'],
+      localimodelzation: json['localimodelzation'],
+      category: json['category'],
+      photo: json['photo'], //?? ?? Constants.NEWS_PLACEHOLDER_IMAGE_ASSET_URL
+      price: double.parse(json['price']),
+      lat: double.parse(json['lat']),
+      lng: double.parse(json['lng']),
+      auction: json['auction'] == 'true',
+      featured: json['featured'] == 'true',
+      year: int.parse(json['year']),
+      km: int.parse(json['km']),
+    );
+  }
+
+  static Resource<List<Car>> get all {
+
+    return Resource(
+        url: Network.CARS,
+        parse: (response) {
+          final result = json.decode(response.body);
+          print(result);
+          Iterable list = result['cars'];
+          return list.map((model) => Car.fromJson(model)).toList();
+        }
+    );
+
+  }
 
 
 }

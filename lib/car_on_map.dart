@@ -58,7 +58,7 @@ class _CustomMap extends State<CustomMap> {
             _googleMap(context),
             _zoomMinusFunction(),
             functionButtons(),
-//            _carsContainer(context),
+            _carsContainer(context),
           ],
         )
       ),

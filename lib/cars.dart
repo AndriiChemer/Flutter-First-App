@@ -6,7 +6,44 @@ import 'package:flutter_food_app/car_detail.dart';
 import 'package:flutter_food_app/model/carItem.dart';
 import 'package:flutter_food_app/model/foodItem.dart';
 
-class CarsList extends StatelessWidget {
+
+//class CarsList extends StatelessWidget {
+//
+//  @override
+//  Widget build(BuildContext context) {
+//    AppBar getAppBar(BuildContext context) {
+//      return AppBar(
+//        actions: <Widget>[
+//          GestureDetector(
+//            onTap: () {
+//              //TODO changing view
+//              Navigator.pop(context);
+//            },
+//            child: Container(
+//              margin: EdgeInsets.only(right: 20),
+//              child: Icon(Icons.apps),
+//            ),
+//          )
+//        ],
+//      );
+//    }
+//
+//    return Scaffold(
+//        appBar: getAppBar(context),
+//        body: CarsListContainer(),
+//        bottomNavigationBar: CustomBottomNavigationBar(),
+//    );
+//  }
+//}
+
+//TODO main CartList screen
+class CarsList extends StatefulWidget {
+
+  @override
+  State<StatefulWidget> createState() => CarsListState();
+}
+
+class CarsListState extends State<CarsList> {
 
   @override
   Widget build(BuildContext context) {
@@ -28,14 +65,26 @@ class CarsList extends StatelessWidget {
     }
 
     return Scaffold(
-        appBar: getAppBar(context),
-        body: CarsListContainer(),
-        bottomNavigationBar: CustomBottomNavigationBar(),
+      appBar: getAppBar(context),
+      body: CarsListContainer(),
+      bottomNavigationBar: CustomBottomNavigationBar(),
     );
   }
+
 }
 
-class CarsListContainer extends StatelessWidget {
+
+
+
+//TODO Container content
+class CarsListContainer extends StatefulWidget {
+
+  @override
+  State<StatefulWidget> createState() => CarsListContainerState();
+}
+
+class CarsListContainerState extends State<CarsListContainer> {
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -51,6 +100,101 @@ class CarsListContainer extends StatelessWidget {
   }
 }
 
+
+
+
+//TODO car item
+class CarItem extends StatefulWidget {
+
+  final Car car;
+
+  CarItem({@required this.car});
+
+  @override
+  State<StatefulWidget> createState() => CarItemState();
+
+}
+
+class CarItemState extends State<CarItem> {
+
+  @override
+  Widget build(BuildContext context) {
+
+    return GestureDetector(
+      onTap: (){
+        Navigator.push(context, MaterialPageRoute(builder: (context) => CarDetail(car: widget.car,)));
+      },
+      child: Container(
+        margin: EdgeInsets.only(bottom: 6),
+        height: 200,
+        decoration: BoxDecoration(
+            border: Border.all(color: widget.car.auction ? Colors.blue : Colors.transparent, width: 2),
+            image: DecorationImage(
+              image: NetworkImage(widget.car.photo),
+              fit: BoxFit.cover,
+            )
+        ),
+        child: Container(
+          margin: EdgeInsets.all(10),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              getPriceRow(),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "${widget.car.brand} ${widget.car.model}",
+                  style: TextStyle(fontSize: 19, color: Colors.white, fontWeight: FontWeight.w700),
+                ),),
+              getCarInfoRow()
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Row getCarInfoRow() {
+    return Row(
+      children: <Widget>[
+        Icon(Icons.time_to_leave, color: Colors.white,),
+        Container(
+          margin: EdgeInsets.only(left: 10),
+          child: Text("${widget.car.fuel}", style: TextStyle(fontSize: 11, color: Colors.white, fontWeight: FontWeight.w500,)),
+        ),
+        Container(
+          margin: EdgeInsets.only(left: 10),
+          child: Text("${widget.car.year.toString()}", style: TextStyle(fontSize: 11, color: Colors.white, fontWeight: FontWeight.w500,)),
+        ),
+        Container(
+          margin: EdgeInsets.only(left: 10),
+          child: Text("${widget.car.km.toString()}", style: TextStyle(fontSize: 11, color: Colors.white, fontWeight: FontWeight.w500,)),
+        )
+      ],
+    );
+  }
+
+  Row getPriceRow() {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          "${widget.car.price.toStringAsFixed(0)}",
+          style: TextStyle(fontSize: 19, color: Colors.white, fontWeight: FontWeight.w700),
+        ),
+        Text(
+          "PLN",
+          style: TextStyle(fontSize: 10, color: Colors.white, fontWeight: FontWeight.w500),
+        )
+      ],
+    );
+  }
+
+}
+
+
+
+//TODO bottom navigation
 class CustomBottomNavigationBar extends StatefulWidget {
 
   @override
@@ -134,88 +278,6 @@ class BottomNavigationBar extends State<CustomBottomNavigationBar> {
       ),
     );
   }
-}
-
-
-class CarItem extends StatelessWidget {
-  final Car car;
-
-
-  CarItem({@required this.car});
-
-  @override
-  Widget build(BuildContext context) {
-
-    return GestureDetector(
-      onTap: (){
-        Navigator.push(context, MaterialPageRoute(builder: (context) => CarDetail(car: car,)));
-      },
-      child: Container(
-        margin: EdgeInsets.only(bottom: 2),
-        height: 200,
-        decoration: BoxDecoration(
-            border: Border.all(color: car.auction ? Colors.blue : Colors.transparent),
-            image: DecorationImage(
-              image: NetworkImage(car.photo),
-              fit: BoxFit.cover,
-            )
-        ),
-        child: Container(
-          margin: EdgeInsets.all(10),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
-              getPriceRow(),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "${car.brand} ${car.model}",
-                  style: TextStyle(fontSize: 19, color: Colors.white, fontWeight: FontWeight.w700),
-                ),),
-              getCarInfoRow()
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Row getCarInfoRow() {
-    return Row(
-      children: <Widget>[
-        Icon(Icons.time_to_leave, color: Colors.white,),
-        Container(
-          margin: EdgeInsets.only(left: 10),
-          child: Text("${car.fuel}", style: TextStyle(fontSize: 11, color: Colors.white, fontWeight: FontWeight.w500,)),
-        ),
-        Container(
-          margin: EdgeInsets.only(left: 10),
-          child: Text("${car.year.toString()}", style: TextStyle(fontSize: 11, color: Colors.white, fontWeight: FontWeight.w500,)),
-        ),
-        Container(
-          margin: EdgeInsets.only(left: 10),
-          child: Text("${car.km.toString()}", style: TextStyle(fontSize: 11, color: Colors.white, fontWeight: FontWeight.w500,)),
-        )
-      ],
-    );
-  }
-
-  Row getPriceRow() {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Text(
-          "${car.price.toStringAsFixed(0)}",
-          style: TextStyle(fontSize: 19, color: Colors.white, fontWeight: FontWeight.w700),
-        ),
-        Text(
-          "PLN",
-          style: TextStyle(fontSize: 10, color: Colors.white, fontWeight: FontWeight.w500),
-        )
-      ],
-    );
-  }
-
 }
 
 class NavigationItem {
