@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_food_app/bloc/listStyleColorBloc.dart';
 import 'package:flutter_food_app/model/foodItem.dart';
+import 'package:flutter_food_app/tools/color_tools.dart';
 
 import 'bloc/cartListBloc.dart';
 import 'cars.dart';
@@ -22,6 +23,7 @@ class Cart extends StatelessWidget {
           foodItem = snapshot.data;
 
           return Scaffold(
+            backgroundColor: ColorTool.fromHex("#F9F9F9"),
             body: SafeArea(
               child: Container(
                 child: CartBody(foodItem),

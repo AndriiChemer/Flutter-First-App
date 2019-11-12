@@ -1,10 +1,7 @@
-import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_food_app/bloc/listStyleColorBloc.dart';
 import 'package:flutter_food_app/car_detail.dart';
 import 'package:flutter_food_app/model/carItem.dart';
-import 'package:flutter_food_app/model/foodItem.dart';
 import 'package:flutter_food_app/services/webservice.dart';
 
 //TODO main CartList screen
@@ -36,6 +33,7 @@ class CarsListState extends State<CarsList> {
     }
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: getAppBar(context),
       body: CarsListContainer(),
       bottomNavigationBar: CustomBottomNavigationBar(),

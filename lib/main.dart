@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_food_app/bloc/cartListBloc.dart';
 import 'package:flutter_food_app/bloc/listStyleColorBloc.dart';
 import 'package:flutter_food_app/model/foodItem.dart';
+import 'package:flutter_food_app/tools/color_tools.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:showcaseview/showcaseview.dart';
 
@@ -25,6 +26,9 @@ class MyApp extends StatelessWidget {
         title: "Food delivery",
         home: Home(),
         debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          canvasColor: Colors.transparent
+        ),
       ),
     );
   }
@@ -62,6 +66,7 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: ColorTool.fromHex("#F9F9F9"),
       body: ShowCaseWidget(
         builder: Builder(
             builder: (context) => HomeBody(),
@@ -69,6 +74,8 @@ class Home extends StatelessWidget {
       ),
     );
   }
+
+
 }
 
 class HomeBody extends StatefulWidget {
@@ -245,7 +252,7 @@ class _ItemState extends State<Item> {
                             style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18),
                           ),
                         ),
-                        Text("\$$widget.itemPrice",
+                        Text("\$${widget.itemPrice}",
                           style: TextStyle(
                               fontWeight: FontWeight.w700,
                               fontSize: 18
@@ -395,8 +402,8 @@ class CustomAppBar extends StatefulWidget {
 
 class _CustomAppBarState extends State<CustomAppBar> {
   final CartListBloc bloc = BlocProvider.getBloc<CartListBloc>();
-  bool isCheck = false;
 
+  bool isCheck = false;
   SharedPreferences sharedPreferences;
 
   void getSharedPreferences() async {
@@ -406,10 +413,10 @@ class _CustomAppBarState extends State<CustomAppBar> {
     });
   }
 
-
   @override
   void initState() {
     getSharedPreferences();
+    super.initState();
   }
 
   @override
@@ -423,20 +430,6 @@ class _CustomAppBarState extends State<CustomAppBar> {
             key: KeysToBeInherited.of(context).optionsKey,
             description: "Click here to open the options drawer",
             child: Icon(Icons.menu),
-          ),
-          CupertinoSwitch(
-            value: isCheck,
-            onChanged: (bool newValue) {
-
-              if(newValue) {
-                sharedPreferences.setBool("foodListDisplayShowcase", false);
-              } else {
-                sharedPreferences.remove("foodListDisplayShowcase");
-              }
-              setState(() {
-                isCheck = newValue;
-              });
-            },
           ),
 
           StreamBuilder(
@@ -455,6 +448,10 @@ class _CustomAppBarState extends State<CustomAppBar> {
 
   GestureDetector buildGestureDetector(int length, BuildContext context, List<FoodItem> foodItems) {
     return GestureDetector(
+      onLongPress: () {
+        showCustomBottomSheetDialog(context);
+      },
+
       onTap: () {
         if(length > 0) {
           Navigator.push(context, MaterialPageRoute(builder: (context) => Cart()));
@@ -477,6 +474,60 @@ class _CustomAppBarState extends State<CustomAppBar> {
       ),
     );
   }
+
+
+  showCustomBottomSheetDialog(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (context) => Container(
+          height: 250,
+          color: Colors.transparent,
+          child: Container(
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.all(Radius.circular(30)),
+                boxShadow: [BoxShadow(
+                    blurRadius: 10, color: Colors.grey[300], spreadRadius: 2)
+                ]
+            ),
+            padding: EdgeInsets.all(20),
+            child: ListView(
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    CupertinoSwitch(
+                      value: isCheck,
+                      onChanged: (bool newValue) {
+
+                        if(newValue) {
+                          sharedPreferences.setBool("foodListDisplayShowcase", false);
+                        } else {
+                          sharedPreferences.remove("foodListDisplayShowcase");
+                        }
+                        setState(() {
+                          isCheck = newValue;
+                        });
+                      },
+                    ),
+
+                    Text("Tutorial", style: TextStyle(fontSize: 20),)
+
+                  ],
+                ),
+                Container(
+                  margin: EdgeInsets.only(top: 10),
+                  height: 1,
+                  width: MediaQuery.of(context).size.width,
+                  color: Colors.grey[900],
+                )
+              ],
+            ),
+          ),
+        )
+    );
+  }
+
 }
 
 
