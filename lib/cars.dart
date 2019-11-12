@@ -116,9 +116,6 @@ class CarsListContainerState extends State<CarsListContainer> {
   }
 }
 
-
-
-
 //TODO car item
 class CarItem extends StatefulWidget {
 
