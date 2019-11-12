@@ -1,9 +1,13 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_food_app/bloc/cartListBloc.dart';
 import 'package:flutter_food_app/bloc/listStyleColorBloc.dart';
 import 'package:flutter_food_app/model/foodItem.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:showcaseview/showcaseview.dart';
 
+import 'bloc/tutorial_bloc/tutorial_check_box_bloc.dart';
 import 'cart.dart';
 
 void main() => runApp(MyApp());
@@ -26,13 +30,105 @@ class MyApp extends StatelessWidget {
   }
 }
 
+class KeysToBeInherited extends InheritedWidget {
+  final GlobalKey cartIndicatorKey;
+  final GlobalKey categoriesKey;
+  final GlobalKey optionsKey;
+  final GlobalKey searchKey;
+  final GlobalKey nameKey;
+
+  KeysToBeInherited({
+    this.cartIndicatorKey,
+    this.categoriesKey,
+    this.optionsKey,
+    this.searchKey,
+    this.nameKey,
+    Widget child
+  }) : super(child: child);
+
+  static KeysToBeInherited of(BuildContext context) {
+    return context.inheritFromWidgetOfExactType(KeysToBeInherited);
+  }
+
+  @override
+  bool updateShouldNotify(InheritedWidget oldWidget) => true;
+
+}
+
+// TODO Home
 class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-      body: SafeArea(
+      body: ShowCaseWidget(
+        builder: Builder(
+            builder: (context) => HomeBody(),
+        ),
+      ),
+    );
+  }
+}
+
+class HomeBody extends StatefulWidget {
+  @override
+  _HomeBodyState createState() => _HomeBodyState();
+}
+
+class _HomeBodyState extends State<HomeBody> {
+
+  GlobalKey _cartIndicatorKey = GlobalKey();
+  GlobalKey _categoriesKey = GlobalKey();
+  GlobalKey _optionsKey = GlobalKey();
+  GlobalKey _searchKey = GlobalKey();
+  GlobalKey _nameKey = GlobalKey();
+
+  @override
+  Widget build(BuildContext context) {
+
+    SharedPreferences preferences;
+
+    displayShowCase() async {
+      preferences = await SharedPreferences.getInstance();
+      bool showCaseVisibilityStatus = preferences.getBool("foodListDisplayShowcase");
+
+      if(showCaseVisibilityStatus == null) {
+        preferences.setBool("foodListDisplayShowcase", false);
+        return true;
+      }
+
+      return false;
+    }
+
+//    WidgetsBinding.instance.addPostFrameCallback((_) => {}
+//        ShowCaseWidget.of(context).startShowCase([
+//          _optionsKey,
+//          _cartIndicatorKey,
+//          _nameKey,
+//          _searchKey,
+//          _categoriesKey
+//        ])
+//    );
+
+    displayShowCase().then((status){
+      if(status) {
+        ShowCaseWidget.of(context).startShowCase([
+          _optionsKey,
+          _cartIndicatorKey,
+          _nameKey,
+          _searchKey,
+          _categoriesKey
+        ]);
+      }
+    });
+
+    return KeysToBeInherited(
+      nameKey: _nameKey,
+      cartIndicatorKey: _cartIndicatorKey,
+      categoriesKey: _categoriesKey,
+      optionsKey: _optionsKey,
+      searchKey: _searchKey,
+      child: SafeArea(
         child: Container(
           child: ListView(
             children: <Widget>[
@@ -40,7 +136,6 @@ class Home extends StatelessWidget {
               SizedBox(height: 45,),
               for(var foodItem in foodItemList.foodItem)
                 ItemContainer(foodItem: foodItem)
-
             ],
           ),
         ),
@@ -49,6 +144,7 @@ class Home extends StatelessWidget {
   }
 }
 
+// TODO counter
 class ItemContainer extends StatelessWidget {
 
   final FoodItem foodItem;
@@ -89,6 +185,7 @@ class ItemContainer extends StatelessWidget {
   }
 }
 
+// TODO item in list view
 class Item extends StatelessWidget {
   final String hotel;
   final String itemName;
@@ -181,22 +278,37 @@ class Item extends StatelessWidget {
   }
 }
 
-
+// TODO first part screen
 class FirstHalf extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final getKeys = KeysToBeInherited.of(context);
+
     return Padding(
       padding: EdgeInsets.fromLTRB(35, 25, 0, 0),
       child: Column(
         children: <Widget>[
           CustomAppBar(),
           SizedBox(height: 30,),
-          title(),
+          Showcase(
+            key: getKeys.nameKey,
+            description: "This is the name of the app incase you haven't noticed",
+            child: title(),
+          ),
           SizedBox(height: 30,),
-          searchBar(),
+          Showcase(
+            key: getKeys.searchKey,
+            description: "This is where you type in a query",
+            child: searchBar(),
+          ),
           SizedBox(height: 30,),
-          categories(),
+          Showcase(
+            key: getKeys.categoriesKey,
+            description: "Choose from not thousands but 5 categories",
+            child: categories(),
+          ),
         ],
       ),
     );
@@ -272,9 +384,80 @@ class FirstHalf extends StatelessWidget {
 
 }
 
+// TODO custom app bar
+//class CustomAppBar extends StatelessWidget {
+//  final CartListBloc bloc = BlocProvider.getBloc<CartListBloc>();
+//  bool isCheck = false;
+//
+//  @override
+//  Widget build(BuildContext context) {
+//    return Container(
+//      margin: EdgeInsets.only(bottom: 15),
+//      child: Row(
+//        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//        children: <Widget>[
+//          Showcase(
+//            key: KeysToBeInherited.of(context).optionsKey,
+//            description: "Click here to open the options drawer",
+//            child: Icon(Icons.menu),
+//          ),
+//          CupertinoSwitch(
+//            value: isCheck,
+//            onChanged: (bool newValue) {
+//              print("CupertinoSwitch, onChanged = $newValue");
+//
+//              isCheck = newValue;
+//            },
+//
+//          ),
+//          StreamBuilder(
+//            stream: bloc.listStream,
+//            builder: (context, snapshot) {
+//              List<FoodItem> foodItems = snapshot.data;
+//              int length = foodItems != null ? foodItems.length : 0;
+//
+//              return buildGestureDetector(length, context, foodItems);
+//            },
+//          )
+//        ],
+//      ),
+//    );
+//  }
+//
+//  GestureDetector buildGestureDetector(int length, BuildContext context, List<FoodItem> foodItems) {
+//    return GestureDetector(
+//      onTap: () {
+//        if(length > 0) {
+//          Navigator.push(context, MaterialPageRoute(builder: (context) => Cart()));
+//        } else {
+//          return;
+//        }
+//      },
+//      child: Showcase(
+//        key: KeysToBeInherited.of(context).cartIndicatorKey,
+//        description: "Click here to review the items in your cart",
+//        child: Container(
+//          margin: EdgeInsets.only(right: 30),
+//          child: Text(length.toString()),
+//          padding: EdgeInsets.all(15),
+//          decoration: BoxDecoration(
+//              color: Colors.yellow[800],
+//              borderRadius: BorderRadius.circular(50)
+//          ),
+//        ),
+//      ),
+//    );
+//  }
+//}
 
-class CustomAppBar extends StatelessWidget {
+class CustomAppBar extends StatefulWidget {
+  @override
+  _CustomAppBarState createState() => _CustomAppBarState();
+}
+
+class _CustomAppBarState extends State<CustomAppBar> {
   final CartListBloc bloc = BlocProvider.getBloc<CartListBloc>();
+  bool isCheck = false;
 
   @override
   Widget build(BuildContext context) {
@@ -283,12 +466,16 @@ class CustomAppBar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Icon(Icons.menu),
+          Showcase(
+            key: KeysToBeInherited.of(context).optionsKey,
+            description: "Click here to open the options drawer",
+            child: Icon(Icons.menu),
+          ),
+//
           StreamBuilder(
             stream: bloc.listStream,
             builder: (context, snapshot) {
               List<FoodItem> foodItems = snapshot.data;
-
               int length = foodItems != null ? foodItems.length : 0;
 
               return buildGestureDetector(length, context, foodItems);
@@ -308,18 +495,23 @@ class CustomAppBar extends StatelessWidget {
           return;
         }
       },
-      child: Container(
-        margin: EdgeInsets.only(right: 30),
-        child: Text(length.toString()),
-        padding: EdgeInsets.all(15),
-        decoration: BoxDecoration(
-          color: Colors.yellow[800],
-          borderRadius: BorderRadius.circular(50)
+      child: Showcase(
+        key: KeysToBeInherited.of(context).cartIndicatorKey,
+        description: "Click here to review the items in your cart",
+        child: Container(
+          margin: EdgeInsets.only(right: 30),
+          child: Text(length.toString()),
+          padding: EdgeInsets.all(15),
+          decoration: BoxDecoration(
+              color: Colors.yellow[800],
+              borderRadius: BorderRadius.circular(50)
+          ),
         ),
       ),
     );
   }
 }
+
 
 class CategoryListItem extends StatelessWidget {
 

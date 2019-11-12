@@ -123,7 +123,6 @@ class Car {
         url: Network.CARS,
         parse: (response) {
           final result = json.decode(response.body);
-          print(result);
           Iterable list = result;
           return list.map((model) => Car.fromJson(model)).toList();
         }
