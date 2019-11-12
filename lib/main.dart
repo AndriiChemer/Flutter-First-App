@@ -30,6 +30,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
+//TODO tutorial
 class KeysToBeInherited extends InheritedWidget {
   final GlobalKey cartIndicatorKey;
   final GlobalKey categoriesKey;
@@ -135,7 +136,7 @@ class _HomeBodyState extends State<HomeBody> {
 }
 
 // TODO counter
-class ItemContainer extends StatelessWidget {
+class ItemContainer extends StatefulWidget {
 
   final FoodItem foodItem;
 
@@ -143,6 +144,11 @@ class ItemContainer extends StatelessWidget {
     @required this.foodItem
   });
 
+  @override
+  _ItemContainerState createState() => _ItemContainerState();
+}
+
+class _ItemContainerState extends State<ItemContainer> {
   final CartListBloc listBloc = BlocProvider.getBloc<CartListBloc>();
 
   addToCart(FoodItem foodItem) {
@@ -153,10 +159,10 @@ class ItemContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        addToCart(foodItem);
+        addToCart(widget.foodItem);
 
         final snackBar = SnackBar(
-          content: Text("${foodItem.title} added to cart"),
+          content: Text("${widget.foodItem.title} added to cart"),
           duration: Duration(milliseconds: 550),
           backgroundColor: Colors.green[700],
 
@@ -165,18 +171,19 @@ class ItemContainer extends StatelessWidget {
         Scaffold.of(context).showSnackBar(snackBar);
       },
       child: Item(
-        hotel: foodItem.hotel,
-        itemName: foodItem.title,
-        itemPrice: foodItem.price,
-        imgUrl: foodItem.imageUrl,
-        leftAligned: foodItem.id % 2 == 0 ? true : false,
+        hotel: widget.foodItem.hotel,
+        itemName: widget.foodItem.title,
+        itemPrice: widget.foodItem.price,
+        imgUrl: widget.foodItem.imageUrl,
+        leftAligned: widget.foodItem.id % 2 == 0 ? true : false,
       ),
     );
   }
 }
 
-// TODO item in list view
-class Item extends StatelessWidget {
+//TODO item
+class Item extends StatefulWidget {
+
   final String hotel;
   final String itemName;
   final double itemPrice;
@@ -191,6 +198,11 @@ class Item extends StatelessWidget {
     @required this.leftAligned});
 
   @override
+  _ItemState createState() => _ItemState();
+}
+
+class _ItemState extends State<Item> {
+  @override
   Widget build(BuildContext context) {
     double containerPadding = 45;
     double containerBorderRadius = 10;
@@ -199,8 +211,8 @@ class Item extends StatelessWidget {
       children: <Widget>[
         Container(
           padding: EdgeInsets.only(
-            left: leftAligned ? 0 : containerPadding,
-            right: leftAligned ? containerPadding : 0
+              left: widget.leftAligned ? 0 : containerPadding,
+              right: widget.leftAligned ? containerPadding : 0
           ),
           child: Column(
             children: <Widget>[
@@ -210,17 +222,17 @@ class Item extends StatelessWidget {
                 decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
                 child: ClipRRect(
                   borderRadius: BorderRadius.horizontal(
-                    left: leftAligned ? Radius.circular(0) : Radius.circular(containerBorderRadius),
-                    right: leftAligned ? Radius.circular(containerBorderRadius) : Radius.circular(0)
+                      left: widget.leftAligned ? Radius.circular(0) : Radius.circular(containerBorderRadius),
+                      right: widget.leftAligned ? Radius.circular(containerBorderRadius) : Radius.circular(0)
                   ),
-                  child: Image.network(imgUrl, fit: BoxFit.fitWidth,),
+                  child: Image.network(widget.imgUrl, fit: BoxFit.fitWidth,),
                 ),
               ),
               SizedBox(height: 15,),
               Container(
                 padding: EdgeInsets.only(
-                  left: leftAligned ? 20 : 0,
-                  right: leftAligned ? 0 : 20,
+                  left: widget.leftAligned ? 20 : 0,
+                  right: widget.leftAligned ? 0 : 20,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -229,15 +241,15 @@ class Item extends StatelessWidget {
                       children: <Widget>[
                         Expanded(
                           child: Text(
-                            itemName,
+                            widget.itemName,
                             style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18),
                           ),
                         ),
-                        Text("\$$itemPrice",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 18
-                        ),)
+                        Text("\$$widget.itemPrice",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              fontSize: 18
+                          ),)
                       ],
                     ),
                     SizedBox(height: 5,),
@@ -245,14 +257,14 @@ class Item extends StatelessWidget {
                       alignment: Alignment.centerLeft,
                       child: RichText(
                         text: TextSpan(
-                          style: TextStyle(
-                            color: Colors.black45,
-                            fontSize: 15
-                          ),
-                          children: [
-                            TextSpan(text: "by "),
-                            TextSpan(text: hotel, style: TextStyle(fontWeight: FontWeight.w700)),
-                          ]
+                            style: TextStyle(
+                                color: Colors.black45,
+                                fontSize: 15
+                            ),
+                            children: [
+                              TextSpan(text: "by "),
+                              TextSpan(text: widget.hotel, style: TextStyle(fontWeight: FontWeight.w700)),
+                            ]
                         ),
                       ),
                     ),
@@ -267,6 +279,7 @@ class Item extends StatelessWidget {
     );
   }
 }
+
 
 // TODO first part screen
 class FirstHalf extends StatelessWidget {
@@ -374,72 +387,7 @@ class FirstHalf extends StatelessWidget {
 
 }
 
-// TODO custom app bar
-//class CustomAppBar extends StatelessWidget {
-//  final CartListBloc bloc = BlocProvider.getBloc<CartListBloc>();
-//  bool isCheck = false;
-//
-//  @override
-//  Widget build(BuildContext context) {
-//    return Container(
-//      margin: EdgeInsets.only(bottom: 15),
-//      child: Row(
-//        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//        children: <Widget>[
-//          Showcase(
-//            key: KeysToBeInherited.of(context).optionsKey,
-//            description: "Click here to open the options drawer",
-//            child: Icon(Icons.menu),
-//          ),
-//          CupertinoSwitch(
-//            value: isCheck,
-//            onChanged: (bool newValue) {
-//              print("CupertinoSwitch, onChanged = $newValue");
-//
-//              isCheck = newValue;
-//            },
-//
-//          ),
-//          StreamBuilder(
-//            stream: bloc.listStream,
-//            builder: (context, snapshot) {
-//              List<FoodItem> foodItems = snapshot.data;
-//              int length = foodItems != null ? foodItems.length : 0;
-//
-//              return buildGestureDetector(length, context, foodItems);
-//            },
-//          )
-//        ],
-//      ),
-//    );
-//  }
-//
-//  GestureDetector buildGestureDetector(int length, BuildContext context, List<FoodItem> foodItems) {
-//    return GestureDetector(
-//      onTap: () {
-//        if(length > 0) {
-//          Navigator.push(context, MaterialPageRoute(builder: (context) => Cart()));
-//        } else {
-//          return;
-//        }
-//      },
-//      child: Showcase(
-//        key: KeysToBeInherited.of(context).cartIndicatorKey,
-//        description: "Click here to review the items in your cart",
-//        child: Container(
-//          margin: EdgeInsets.only(right: 30),
-//          child: Text(length.toString()),
-//          padding: EdgeInsets.all(15),
-//          decoration: BoxDecoration(
-//              color: Colors.yellow[800],
-//              borderRadius: BorderRadius.circular(50)
-//          ),
-//        ),
-//      ),
-//    );
-//  }
-//}
-
+//TODO custom app bar
 class CustomAppBar extends StatefulWidget {
   @override
   _CustomAppBarState createState() => _CustomAppBarState();
@@ -476,7 +424,6 @@ class _CustomAppBarState extends State<CustomAppBar> {
             description: "Click here to open the options drawer",
             child: Icon(Icons.menu),
           ),
-
           CupertinoSwitch(
             value: isCheck,
             onChanged: (bool newValue) {
@@ -533,6 +480,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
 }
 
 
+//TODO categories
 class CategoryListItem extends StatelessWidget {
 
   final IconData categoryIcon;
