@@ -100,16 +100,6 @@ class _HomeBodyState extends State<HomeBody> {
       return false;
     }
 
-//    WidgetsBinding.instance.addPostFrameCallback((_) => {}
-//        ShowCaseWidget.of(context).startShowCase([
-//          _optionsKey,
-//          _cartIndicatorKey,
-//          _nameKey,
-//          _searchKey,
-//          _categoriesKey
-//        ])
-//    );
-
     displayShowCase().then((status){
       if(status) {
         ShowCaseWidget.of(context).startShowCase([
@@ -459,6 +449,21 @@ class _CustomAppBarState extends State<CustomAppBar> {
   final CartListBloc bloc = BlocProvider.getBloc<CartListBloc>();
   bool isCheck = false;
 
+  SharedPreferences sharedPreferences;
+
+  void getSharedPreferences() async {
+    sharedPreferences = await SharedPreferences.getInstance();
+    setState(() {
+      isCheck = sharedPreferences.containsKey("foodListDisplayShowcase");
+    });
+  }
+
+
+  @override
+  void initState() {
+    getSharedPreferences();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -471,7 +476,22 @@ class _CustomAppBarState extends State<CustomAppBar> {
             description: "Click here to open the options drawer",
             child: Icon(Icons.menu),
           ),
-//
+
+          CupertinoSwitch(
+            value: isCheck,
+            onChanged: (bool newValue) {
+
+              if(newValue) {
+                sharedPreferences.setBool("foodListDisplayShowcase", false);
+              } else {
+                sharedPreferences.remove("foodListDisplayShowcase");
+              }
+              setState(() {
+                isCheck = newValue;
+              });
+            },
+          ),
+
           StreamBuilder(
             stream: bloc.listStream,
             builder: (context, snapshot) {
