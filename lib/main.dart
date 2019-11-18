@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_food_app/bloc/car_bloc/bottom_nav_bloc.dart';
 import 'package:flutter_food_app/bloc/cartListBloc.dart';
 import 'package:flutter_food_app/bloc/listStyleColorBloc.dart';
 import 'package:flutter_food_app/model/foodItem.dart';
@@ -11,7 +12,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:showcaseview/showcaseview.dart';
 
-import 'cars.dart';
 import 'cart.dart';
 
 void main() => runApp(MyApp());
@@ -23,7 +23,8 @@ class MyApp extends StatelessWidget {
     return BlocProvider(
       blocs: [
         Bloc((i)=>CartListBloc()),
-        Bloc((i)=> ColorBloc())
+        Bloc((i)=> ColorBloc()),
+        Bloc((i)=> BottomNavBloc())
       ],
       child: MaterialApp(
         title: "Food delivery",

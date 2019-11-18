@@ -1,8 +1,11 @@
+import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_food_app/bloc/car_bloc/bottom_nav_bloc.dart';
 import 'package:flutter_food_app/car_detail.dart';
 import 'package:flutter_food_app/model/carItem.dart';
 import 'package:flutter_food_app/services/webservice.dart';
+import 'package:flutter_food_app/test_animation.dart';
 
 //TODO main CartList screen
 class CarsList extends StatefulWidget {
@@ -13,8 +16,17 @@ class CarsList extends StatefulWidget {
 
 class CarsListState extends State<CarsList> {
 
+  List<Widget> navigationScreens = [
+    CarsListContainer(),
+    Center(child: Text("Favorite"),),
+    AnimationScreen(),
+    Center(child: Text("Account"),)
+  ];
+
   @override
   Widget build(BuildContext context) {
+    BottomNavBloc bottomNavBloc = BlocProvider.getBloc<BottomNavBloc>();
+
     AppBar getAppBar(BuildContext context) {
       return AppBar(
         actions: <Widget>[
@@ -35,7 +47,12 @@ class CarsListState extends State<CarsList> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: getAppBar(context),
-      body: CarsListContainer(),
+      body: StreamBuilder(
+        stream: bottomNavBloc.navStream,
+        builder: (context, snapshot) {
+          return snapshot.data != null ? navigationScreens[snapshot.data] : Center(child: Text("Data snapshot == null"),);
+        },
+      ),
       bottomNavigationBar: CustomBottomNavigationBar(),
     );
   }
@@ -225,6 +242,8 @@ class BottomNavigationBar extends State<CustomBottomNavigationBar> {
     NavigationItem(Icon(Icons.account_box), Text("Account"), Colors.cyanAccent),
   ];
 
+  final BottomNavBloc bottomNavBloc = BlocProvider.getBloc<BottomNavBloc>();
+
   Widget buildItems(NavigationItem navigationItem, bool isSelected) {
     return AnimatedContainer(
       duration: Duration(milliseconds: 270),
@@ -281,6 +300,7 @@ class BottomNavigationBar extends State<CustomBottomNavigationBar> {
           var itemIndex = listNavItem.indexOf(item);
           return GestureDetector(
             onTap: (){
+              bottomNavBloc.setNavIndexPage(itemIndex);
               setState((){
                 selectedIndex = itemIndex;
               });
