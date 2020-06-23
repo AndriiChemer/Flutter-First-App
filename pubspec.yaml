@@ -48,6 +48,10 @@ dev_dependencies:
 flutter:
   assets:
     - assets/images/thecsguy.png
+    - assets/images/icons/burger_category_icon.png
+    - assets/images/icons/pizza_category_icon.png
+    - assets/images/icons/sushi_category_icon.png
+    - assets/images/icons/water_category_icon.png
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

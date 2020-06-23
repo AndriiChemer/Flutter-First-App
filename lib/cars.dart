@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_food_app/bloc/car_bloc/bottom_nav_bloc.dart';
 import 'package:flutter_food_app/car_detail.dart';
 import 'package:flutter_food_app/model/carItem.dart';
+import 'package:flutter_food_app/model/foodmodel.dart';
 import 'package:flutter_food_app/services/webservice.dart';
 import 'package:flutter_food_app/test_animation.dart';
 

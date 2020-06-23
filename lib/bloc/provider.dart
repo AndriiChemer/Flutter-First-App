@@ -1,9 +1,9 @@
-import 'package:flutter_food_app/model/foodItem.dart';
+import 'package:flutter_food_app/model/foodmodel.dart';
 
 class CartProvider {
-  List<FoodItem> foodItems = [];
+  List<FoodModel> foodItems = [];
 
-  List<FoodItem> addToList(FoodItem foodItem) {
+  List<FoodModel> addToList(FoodModel foodItem) {
     bool isPresent = false;
 
     if(foodItems.length > 0) {
@@ -28,7 +28,7 @@ class CartProvider {
     return foodItems;
   }
 
-  List<FoodItem> removeFromList(FoodItem foodItem) {
+  List<FoodModel> removeFromList(FoodModel foodItem) {
     if(foodItem.quantity > 1) {
       foodItem.decrementQuantity();
     } else {
@@ -37,6 +37,6 @@ class CartProvider {
     return foodItems;
   }
 
-  void increaseItemQuantity(FoodItem foodItem) => foodItem.incrementQuantity();
-  void decreaseItemQuantity(FoodItem foodItem) => foodItem.decrementQuantity();
+  void increaseItemQuantity(FoodModel foodItem) => foodItem.incrementQuantity();
+  void decreaseItemQuantity(FoodModel foodItem) => foodItem.decrementQuantity();
 }

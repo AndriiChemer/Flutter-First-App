@@ -2,11 +2,11 @@ import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_food_app/bloc/listStyleColorBloc.dart';
-import 'package:flutter_food_app/model/foodItem.dart';
+import 'package:flutter_food_app/model/foodmodel.dart';
 import 'package:flutter_food_app/tools/color_tools.dart';
 
-import 'bloc/cartListBloc.dart';
-import 'cars.dart';
+import '../../bloc/cartListBloc.dart';
+import '../../cars.dart';
 
 class Cart extends StatelessWidget {
 
@@ -14,7 +14,7 @@ class Cart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<FoodItem> foodItem;
+    List<FoodModel> foodItem;
 
     return StreamBuilder(
       stream: bloc.listStream,
@@ -40,7 +40,7 @@ class Cart extends StatelessWidget {
 }
 
 class BottomBar extends StatelessWidget {
-  final List<FoodItem> foodItems;
+  final List<FoodModel> foodItems;
 
   BottomBar(this.foodItems);
 
@@ -91,6 +91,22 @@ class BottomBar extends StatelessWidget {
     );
   }
 
+  Widget buttonContent() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Text(
+          "15-25 min",
+          style: TextStyle(fontWeight: FontWeight.w800, fontSize: 14),
+        ),
+        Text(
+          "Next",
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900),
+        )
+      ],
+    );
+  }
+
   Container persons() {
     return Container(
       margin: EdgeInsets.only(right: 10),
@@ -108,7 +124,7 @@ class BottomBar extends StatelessWidget {
     );
   }
 
-  Container totalAmount(List<FoodItem> foodItems) {
+  Container totalAmount(List<FoodModel> foodItems) {
     return Container(
       margin: EdgeInsets.only(right: 10),
       padding: EdgeInsets.all(25),
@@ -128,10 +144,10 @@ class BottomBar extends StatelessWidget {
     );
   }
 
-  String returnTotalAmount(List<FoodItem> foodItems) {
+  String returnTotalAmount(List<FoodModel> foodItems) {
     double totalAmount = 0.0;
 
-    for(FoodItem foodItem in foodItems) {
+    for(FoodModel foodItem in foodItems) {
       totalAmount += foodItem.price * foodItem.quantity;
     }
 
@@ -141,7 +157,7 @@ class BottomBar extends StatelessWidget {
 
 
 class CartBody extends StatelessWidget {
-  final List<FoodItem> foodItems;
+  final List<FoodModel> foodItems;
 
   CartBody(this.foodItems);
   
@@ -279,7 +295,7 @@ class _CustomPersonWidgetState extends State<CustomPersonWidget> {
 
 
 class CartListItem extends StatelessWidget {
-  final FoodItem foodItem;
+  final FoodModel foodItem;
 
   CartListItem({@required this.foodItem});
 
@@ -297,7 +313,7 @@ class CartListItem extends StatelessWidget {
 }
 
 class DraggableChild extends StatelessWidget {
-  final FoodItem foodItem;
+  final FoodModel foodItem;
 
   DraggableChild({Key key, @required this.foodItem}) : super(key: key);
 
@@ -316,7 +332,7 @@ class DraggableChild extends StatelessWidget {
 }
 
 class DraggableChildFeedback extends StatelessWidget {
-  final FoodItem foodItem;
+  final FoodModel foodItem;
 
   DraggableChildFeedback({Key key, @required this.foodItem}) : super(key: key);
 
@@ -347,7 +363,7 @@ class DraggableChildFeedback extends StatelessWidget {
 
 
 class ItemContent extends StatelessWidget {
-  final FoodItem foodItem;
+  final FoodModel foodItem;
 
   ItemContent({@required this.foodItem});
 
@@ -434,17 +450,17 @@ class _DragTargetWidgetState extends State<DragTargetWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return DragTarget(
+    return DragTarget<FoodModel>(
 
-      onWillAccept: (FoodItem foodItem) {
+      onWillAccept: (FoodModel foodItem) {
         colorBloc.setColor(Colors.red);
         return true;
       },
-      onAccept: (FoodItem foodItem){
+      onAccept: (FoodModel foodItem){
         listBloc.removeFromList(foodItem);
         colorBloc.setColor(Colors.white);
       },
-      onLeave: (FoodItem foodItem){
+      onLeave: (foodItem) {
         colorBloc.setColor(Colors.white);
       },
 

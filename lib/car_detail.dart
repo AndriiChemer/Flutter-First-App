@@ -5,7 +5,7 @@ import 'package:flutter_food_app/bloc/car_bloc/state_provider.dart';
 import 'package:flutter_food_app/bloc/listStyleColorBloc.dart';
 import 'package:flutter_food_app/car_on_map.dart';
 import 'package:flutter_food_app/model/carItem.dart';
-import 'package:flutter_food_app/model/foodItem.dart';
+import 'package:flutter_food_app/model/foodmodel.dart';
 
 class CarDetail extends StatelessWidget {
 
