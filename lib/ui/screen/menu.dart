@@ -179,7 +179,6 @@ class FirstHalf extends StatelessWidget {
 
   Widget categories() {
     var listCategory = categoryListItem.categoryList;
-    selectedId = listCategory[0].id;
 
     return Container(
       height: 185,
@@ -188,10 +187,7 @@ class FirstHalf extends StatelessWidget {
         itemCount: listCategory.length,
         itemBuilder: (context, i) {
           return CategoryItem(
-            categoryIcon: ImageTools.getCategoryImage(listCategory[i].categoryIcon),
-            categoryName: listCategory[i].categoryName,
-            availability: listCategory[i].availability,
-            selected: listCategory[i].selected,
+            categoryModel: listCategory[i],
           );
         },
       ),

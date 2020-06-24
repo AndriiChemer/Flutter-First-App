@@ -8,6 +8,8 @@ import 'package:flutter_food_app/ui/screen/splash.dart';
 
 import 'package:flutter_food_app/ui/screen/menu.dart';
 
+import 'bloc/categoryBloc.dart';
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -17,7 +19,8 @@ class MyApp extends StatelessWidget {
       blocs: [
         Bloc((i)=>CartListBloc()),
         Bloc((i)=> ColorBloc()),
-        Bloc((i)=> BottomNavBloc())
+        Bloc((i)=> BottomNavBloc()),
+        Bloc((i)=> CategoryBloc()),
       ],
       child: MaterialApp(
         title: "Food delivery",
