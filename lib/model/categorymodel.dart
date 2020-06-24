@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 CategoryModelList categoryListItem = CategoryModelList(categoryList: [
-  CategoryModel(id: 1, categoryName: "Burgers", categoryIcon: "burger", selected: true, availability: 12),
-  CategoryModel(id: 2, categoryName: "Sushi", categoryIcon: "sushi", selected: false, availability: 12),
-  CategoryModel(id: 3, categoryName: "Pizza", categoryIcon: "pizza", selected: false, availability: 12),
-  CategoryModel(id: 4, categoryName: "Drinks", categoryIcon: "drinks", selected: false, availability: 12),
+  CategoryModel(id: 1, categoryName: "Burgers", categoryIcon: "burger", selected: true, availability: 4),
+  CategoryModel(id: 2, categoryName: "Sushi", categoryIcon: "sushi", selected: false, availability: 4),
+  CategoryModel(id: 3, categoryName: "Pizza", categoryIcon: "pizza", selected: false, availability: 4),
+  CategoryModel(id: 4, categoryName: "Drinks", categoryIcon: "drinks", selected: false, availability: 4),
 ]);
 
 class CategoryModelList {

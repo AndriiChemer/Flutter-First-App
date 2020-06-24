@@ -52,6 +52,7 @@ flutter:
     - assets/images/icons/pizza_category_icon.png
     - assets/images/icons/sushi_category_icon.png
     - assets/images/icons/water_category_icon.png
+    - assets/images/icons/shopping_cart.png
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

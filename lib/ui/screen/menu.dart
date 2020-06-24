@@ -6,6 +6,7 @@ import 'package:flutter_food_app/bloc/cartListBloc.dart';
 import 'package:flutter_food_app/model/categorymodel.dart';
 import 'package:flutter_food_app/model/foodmodel.dart';
 import 'package:flutter_food_app/tools/color_tools.dart';
+import 'package:flutter_food_app/tools/image_tools.dart';
 import 'package:flutter_food_app/tools/string_tools.dart';
 import 'package:flutter_food_app/ui/screen/cart.dart';
 import 'package:flutter_food_app/ui/widget/categoryitem.dart';
@@ -187,7 +188,7 @@ class FirstHalf extends StatelessWidget {
         itemCount: listCategory.length,
         itemBuilder: (context, i) {
           return CategoryItem(
-            categoryIcon: Image.asset(name),
+            categoryIcon: ImageTools.getCategoryImage(listCategory[i].categoryIcon),
             categoryName: listCategory[i].categoryName,
             availability: listCategory[i].availability,
             selected: listCategory[i].selected,
@@ -196,41 +197,6 @@ class FirstHalf extends StatelessWidget {
       ),
     );
   }
-
-//  Widget categories() {
-//    return Container(
-//      height: 185,
-//      child: ListView(
-//        scrollDirection: Axis.horizontal,
-//        children: <Widget>[
-//          CategoryItem(
-//            categoryIcon: Icons.bug_report,
-//            categoryName: "Burgers",
-//            availability: 12,
-//            selected: true,
-//          ),
-//          CategoryItem(
-//            categoryIcon: Icons.bug_report,
-//            categoryName: "Sushi",
-//            availability: 12,
-//            selected: false,
-//          ),
-//          CategoryItem(
-//            categoryIcon: Icons.bug_report,
-//            categoryName: "Pizza",
-//            availability: 12,
-//            selected: false,
-//          ),
-//          CategoryItem(
-//            categoryIcon: Icons.bug_report,
-//            categoryName: "Stacke",
-//            availability: 12,
-//            selected: false,
-//          ),
-//        ],
-//      ),
-//    );
-//  }
 
   Widget searchBar() {
     return Row(
@@ -336,14 +302,35 @@ class _CustomAppBarState extends State<CustomAppBar> {
       child: Showcase(
         key: KeysToBeInherited.of(context).cartIndicatorKey,
         description: "Click here to review the items in your cart",
-        child: Container(
-          margin: EdgeInsets.only(right: 30),
-          child: Text(length.toString()),
-          padding: EdgeInsets.all(15),
-          decoration: BoxDecoration(
-              color: Colors.yellow[800],
-              borderRadius: BorderRadius.circular(50)
-          ),
+        child: Stack(
+          children: [
+            Container(
+              margin: EdgeInsets.only(right: 30),
+              padding: EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                  color: Colors.yellow[800],
+                  borderRadius: BorderRadius.circular(50)
+              ),
+              child: Image.asset("assets/images/icons/shopping_cart.png", width: 25, height: 25,),
+            ),
+            Container(
+              width: 60,
+              height: 30,
+              alignment: Alignment.topRight,
+              child: length > 0 ? Container(
+                  width: 25,
+                  height: 25,
+                  alignment: Alignment.bottomLeft,
+                  child: Center(
+                    child: Text(length.toString(), style: TextStyle(fontSize: 15),),
+                  ),
+                  decoration: BoxDecoration(
+                      color: Colors.red[900],
+                      borderRadius: BorderRadius.circular(50)
+                  )
+              ) : Container(),
+            ),
+          ],
         ),
       ),
     );
