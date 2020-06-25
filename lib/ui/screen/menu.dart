@@ -186,7 +186,8 @@ class FirstHalf extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         itemCount: listCategory.length,
         itemBuilder: (context, i) {
-          return CategoryItem(
+          return CategoryItem1(
+            position: i,
             categoryModel: listCategory[i],
           );
         },
