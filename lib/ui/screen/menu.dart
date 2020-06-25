@@ -3,6 +3,7 @@ import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_food_app/bloc/cartListBloc.dart';
+import 'package:flutter_food_app/bloc/categoryBloc.dart';
 import 'package:flutter_food_app/model/categorymodel.dart';
 import 'package:flutter_food_app/model/foodmodel.dart';
 import 'package:flutter_food_app/tools/color_tools.dart';
@@ -43,6 +44,8 @@ class _HomeBodyState extends State<HomeBody> {
   GlobalKey _optionsKey = GlobalKey();
   GlobalKey _searchKey = GlobalKey();
   GlobalKey _nameKey = GlobalKey();
+
+  var foodList = foodItemList.foodItem;
 
   @override
   Widget build(BuildContext context) {
@@ -94,142 +97,6 @@ class _HomeBodyState extends State<HomeBody> {
     );
   }
 }
-
-class ItemContainer extends StatefulWidget {
-
-  final FoodModel foodItem;
-
-  ItemContainer({
-    @required this.foodItem
-  });
-
-  @override
-  _ItemContainerState createState() => _ItemContainerState();
-}
-
-class _ItemContainerState extends State<ItemContainer> {
-  final CartListBloc listBloc = BlocProvider.getBloc<CartListBloc>();
-
-  addToCart(FoodModel foodItem) {
-    listBloc.addToList(foodItem);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        addToCart(widget.foodItem);
-
-        final snackBar = SnackBar(
-          content: Text("${widget.foodItem.title} added to cart"),
-          duration: Duration(milliseconds: 550),
-          backgroundColor: Colors.green[700],
-
-        );
-
-        Scaffold.of(context).showSnackBar(snackBar);
-      },
-      child: FoodItem(
-        hotel: widget.foodItem.hotel,
-        itemName: widget.foodItem.title,
-        itemPrice: widget.foodItem.price,
-        imgUrl: widget.foodItem.imageUrl,
-        leftAligned: widget.foodItem.id % 2 == 0 ? true : false,
-      ),
-    );
-  }
-}
-
-class FirstHalf extends StatelessWidget {
-
-  var selectedId = -1;
-
-  @override
-  Widget build(BuildContext context) {
-
-    final getKeys = KeysToBeInherited.of(context);
-
-    return Padding(
-      padding: EdgeInsets.fromLTRB(35, 25, 0, 0),
-      child: Column(
-        children: <Widget>[
-          CustomAppBar(),
-          SizedBox(height: 30,),
-          Showcase(
-            key: getKeys.nameKey,
-            description: "This is the name of the app incase you haven't noticed",
-            child: title(),
-          ),
-          SizedBox(height: 30,),
-          Showcase(
-            key: getKeys.searchKey,
-            description: "This is where you type in a query",
-            child: searchBar(),
-          ),
-          SizedBox(height: 30,),
-          Showcase(
-            key: getKeys.categoriesKey,
-            description: "Choose from not thousands but 5 categories",
-            child: categories(),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget categories() {
-    var listCategory = categoryListItem.categoryList;
-
-    return Container(
-      height: 185,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: listCategory.length,
-        itemBuilder: (context, i) {
-          return CategoryItem1(
-            position: i,
-            categoryModel: listCategory[i],
-          );
-        },
-      ),
-    );
-  }
-
-  Widget searchBar() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[
-        Icon(Icons.search, color: Colors.black45,),
-        SizedBox(width: 20,),
-        Expanded(child: TextField(
-          decoration: InputDecoration(
-              hintText: "Search...",
-              contentPadding: EdgeInsets.symmetric(vertical: 10),
-              hintStyle: TextStyle(color: Colors.black87)
-          ),
-        ),)
-      ],
-    );
-  }
-
-  Widget title() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: <Widget>[
-        SizedBox(width: 45,),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(StringTools.food, style: TextStyle(fontSize: 30, fontWeight: FontWeight.w700),),
-            Text(StringTools.delivery, style: TextStyle(fontSize: 30, fontWeight: FontWeight.w200),),
-          ],
-        )
-      ],
-    );
-  }
-
-}
-
 
 //TODO custom app bar
 class CustomAppBar extends StatefulWidget {
@@ -384,4 +251,213 @@ class _CustomAppBarState extends State<CustomAppBar> {
     );
   }
 
+}
+
+// TODO Title, Search, Category
+class FirstHalf extends StatefulWidget {
+  @override
+  _FirstHalfState createState() => _FirstHalfState();
+}
+
+class _FirstHalfState extends State<FirstHalf> with SingleTickerProviderStateMixin {
+
+  Animation<double> animationHeight;
+  AnimationController animationCategoryController;
+  final CategoryBloc categoryBloc = BlocProvider.getBloc<CategoryBloc>();
+  CategoryAnimationStatus categoryAnimationStatus = CategoryAnimationStatus.closed;
+
+  @override
+  void initState() {
+    _prepareAnimationController();
+    animationCategoryController.reverse();
+
+    _categoryListener();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final getKeys = KeysToBeInherited.of(context);
+
+    return Padding(
+      padding: EdgeInsets.fromLTRB(35, 25, 0, 0),
+      child: Column(
+        children: <Widget>[
+          CustomAppBar(),
+          SizedBox(height: 30,),
+          Showcase(
+            key: getKeys.nameKey,
+            description: "This is the name of the app incase you haven't noticed",
+            child: title(),
+          ),
+          SizedBox(height: 30,),
+          Showcase(
+            key: getKeys.searchKey,
+            description: "This is where you type in a query",
+            child: searchBar(),
+          ),
+          SizedBox(height: 30,),
+          Showcase(
+            key: getKeys.categoriesKey,
+            description: "Choose from not thousands but 5 categories",
+            child: categories(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget categories() {
+    var listCategory = categoryListItem.categoryList;
+
+    return Container(
+      height: animationHeight.value,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: listCategory.length,
+        itemBuilder: (context, i) {
+          return CategoryItem(
+            position: i,
+            categoryModel: listCategory[i],
+          );
+        },
+      ),
+    );
+  }
+
+  Widget searchBar() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Icon(Icons.search, color: Colors.black45,),
+        SizedBox(width: 20,),
+        Expanded(child: TextField(
+          decoration: InputDecoration(
+              hintText: "Search...",
+              contentPadding: EdgeInsets.symmetric(vertical: 10),
+              hintStyle: TextStyle(color: Colors.black87)
+          ),
+        ),)
+      ],
+    );
+  }
+
+  Widget title() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: <Widget>[
+        SizedBox(width: 45,),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(StringTools.food, style: TextStyle(fontSize: 30, fontWeight: FontWeight.w700),),
+            Text(StringTools.delivery, style: TextStyle(fontSize: 30, fontWeight: FontWeight.w200),),
+          ],
+        )
+      ],
+    );
+  }
+
+  _prepareAnimationController() {
+    animationCategoryController = new AnimationController(
+        duration: const Duration(milliseconds: 500),
+        vsync: this
+    )..addListener((){
+      setState((){});
+    })..addStatusListener((AnimationStatus status) {
+      if (status == AnimationStatus.completed) {
+        ///
+        /// When the animation is at the end, the menu is open
+        ///
+        categoryAnimationStatus = CategoryAnimationStatus.open;
+      } else if (status == AnimationStatus.dismissed) {
+        ///
+        /// When the animation is at the beginning, the menu is closed
+        ///
+        categoryAnimationStatus = CategoryAnimationStatus.closed;
+      } else {
+        ///
+        /// Otherwise the animation is running
+        ///
+        categoryAnimationStatus = CategoryAnimationStatus.animating;
+      }
+    });
+
+    animationHeight = new Tween(begin: 185.0, end: 100.0)
+        .animate(animationCategoryController);
+  }
+
+  _handleCategoryAnimationState(){
+    if (categoryAnimationStatus == CategoryAnimationStatus.closed){
+      animationCategoryController.forward().orCancel;
+    } else if (categoryAnimationStatus == CategoryAnimationStatus.open) {
+      animationCategoryController.reverse().orCancel;
+    }
+  }
+
+  void _categoryListener() {
+    categoryBloc.categoryStream.listen((event) {
+      _handleCategoryAnimationState();
+    });
+  }
+
+  @override
+  void setState(fn) {
+    if(this.mounted) {
+      super.setState(fn);
+    }
+  }
+
+  @override
+  void dispose() {
+    animationCategoryController.dispose();
+    super.dispose();
+  }
+}
+
+
+//TODO food item
+class ItemContainer extends StatefulWidget {
+
+  final FoodModel foodItem;
+
+  ItemContainer({
+    @required this.foodItem
+  });
+
+  @override
+  _ItemContainerState createState() => _ItemContainerState();
+}
+
+class _ItemContainerState extends State<ItemContainer> {
+  final CartListBloc listBloc = BlocProvider.getBloc<CartListBloc>();
+
+  addToCart(FoodModel foodItem) {
+    listBloc.addToList(foodItem);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        addToCart(widget.foodItem);
+
+        final snackBar = SnackBar(
+          content: Text("${widget.foodItem.title} added to cart"),
+          duration: Duration(milliseconds: 550),
+          backgroundColor: Colors.green[700],
+
+        );
+
+        Scaffold.of(context).showSnackBar(snackBar);
+      },
+      child: FoodItem(
+        hotel: widget.foodItem.hotel,
+        itemName: widget.foodItem.title,
+        itemPrice: widget.foodItem.price,
+        imgUrl: widget.foodItem.imageUrl,
+        leftAligned: widget.foodItem.id % 2 == 0 ? true : false,
+      ),
+    );
+  }
 }
